@@ -512,4 +512,4 @@ unifyMerge st1 st2 =
 --
 -- Zrobione. Dodałem "$$" przed nazwami zmiennych ... (Powtórzenia? tak jest fajniej.)
 --
--- TODO: unifikuje / bez ostrzeżenia / clause/4 i clause/5
+-- (+) zrobione: TODO: unifikuje / bez ostrzeżenia / clause/4 i clause/5
