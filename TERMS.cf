@@ -1,0 +1,4 @@
+TClause. Term ::= Ident "(" [Term] ")" ;
+TIdent.  Term1 ::= Ident ;
+separator Term "," ;
+coercions Term 1 ;
