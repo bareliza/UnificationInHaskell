@@ -1,1 +1,1 @@
-bnfc --haskell TERMS.cf
+bnfc -m --haskell TERMS.cf

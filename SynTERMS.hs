@@ -101,7 +101,9 @@ showSubst1 (v, st) = (showVar v) ++ " -> " ++ (showSTerm st) ++ "\n"
 
 -- showSubstitution:
 showSubst :: [(Variable, STerm)] -> String
-showSubst l = foldl (++) "" $ map (\(x,y) -> showSubst1 (x,y)) l
+showSubst l =
+  if length l > 0 then foldl (++) "" $ map (\(x,y) -> showSubst1 (x,y)) l
+  else "Empty substitution.\n"
 
 putSubst :: [(Variable, STerm)] -> IO ()
 putSubst x = putStr (showSubst x)
@@ -362,8 +364,13 @@ showSubstAndSepare sts = showSubst sts ++ "-----------------\n"
 putGroups :: [[(Variable, STerm)]] -> IO ()
 putGroups gsts = putStr $ foldl1 (++) $ map showSubstAndSepare gsts
 
+-- zalozenie : length sts > 0
 mergeSubsts :: [(Variable, STerm)] -> [(Variable, STerm)]
-mergeSubsts sts = map mergeNSubsts (groupBy (frontOfTupleSame) (sort sts))
+mergeSubsts sts =
+  if length sts > 0 then
+    map mergeNSubsts (groupBy (frontOfTupleSame) (sort sts))
+  else
+    []
 
 ------------------------------------------------------------------------
 -- test 5.1, 5.2                                                      --
@@ -413,6 +420,10 @@ merge2SubstsForFolding v st1 st2 =
 -- caveat: we loose / like in notice above / substitutions on rest of variables
 
 -- ///// Zapewne można zrobić fold po [STerm] z samym akumulatorem, próbuję zrobić to zbyt szeroko
+
+-- Ta funkcja bieze liste podstawien Var1 <- Term1 .. VarN <- TermN
+-- i próbuje laczyc z pomoca unifikacji gdy zmienna na tej liscie sie powtarza 
+-- zalozenie: lista podstawien zawiera choc jeden element
 mergeNSubstsAcc :: [(Variable, STerm)] -> (Variable, (STerm, [(Variable, STerm)]))
 mergeNSubstsAcc ss =
   let v = pairToFirst (head ss) in
@@ -482,11 +493,13 @@ mergingUnifyingLoop sts =
 
 unifyMergeS :: String -> String -> [(Variable,STerm)]
 unifyMergeS t1 t2 =
-  let sts1 = unifyS t1 t2 in mergingUnifyingLoop sts1
+  let sts1 = unifyS t1 t2 in
+  if length sts1 > 0 then mergingUnifyingLoop sts1 else sts1
 
 unifyMerge :: STerm -> STerm -> [(Variable,STerm)]
 unifyMerge st1 st2 =
-  let sts1 = unify st1 st2 in mergingUnifyingLoop sts1
+  let sts1 = unify st1 st2 in
+  if length sts1 > 0 then mergingUnifyingLoop sts1 else sts1
 
 -- do sprawdzenia:
 --
