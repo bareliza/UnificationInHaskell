@@ -139,7 +139,10 @@ unify st1 st2 =
       if id1 /= id2 then
         error $ "Clause names '" ++ id1 ++"' and '" ++ id2 ++"' differ."
       else
-        foldl (++) [] $ map unify1 (zip l1 l2)
+        if length l1 /= length l2 then
+          error "Different arity of clauses."
+        else
+          foldl (++) [] $ map unify1 (zip l1 l2)
     (STVar iia@(Ident ia), STVar iib@(Ident ib)) ->
       if ia == ib
         then [(Var (Ident ("$$" ++ ia)), STAtom (Ident "?free variable"))]
